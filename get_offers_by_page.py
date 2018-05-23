@@ -1,8 +1,12 @@
 import os
 from selenium import webdriver
+from pyvirtualdisplay import Display
 
 current_path = os.path.dirname(os.path.realpath(__file__))
 chromedriver_path = os.path.join(current_path, 'chromedriver')
+
+display =Display(visible=0, size=(800,600))
+display.start()
 
 driver = webdriver.Chrome(chromedriver_path)
 try:

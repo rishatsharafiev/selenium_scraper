@@ -17,3 +17,9 @@ java -jar selenium-server-standalone-*.jar
 
 ### Selenium Python Docs
 https://selenium-python.readthedocs.io
+
+
+### Install requirements for pyvirtualdisplay
+```
+sudo apt-get install xvfb
+```
