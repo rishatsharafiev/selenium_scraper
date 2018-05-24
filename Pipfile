@@ -10,6 +10,8 @@ name = "pypi"
 selenium = "==3.12.*"
 pyvirtualdisplay = "==0.2.*"
 gevent = "*"
+request = "*"
+pillow = "*"
 
 
 [dev-packages]

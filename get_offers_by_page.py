@@ -4,11 +4,13 @@ from selenium import webdriver
 from pyvirtualdisplay import Display
 from selenium.common.exceptions import WebDriverException, NoSuchElementException
 
+import requests
+
 class TestEdaDealSite(unittest.TestCase):
 
     def setUp(self):
         self.display = Display(visible=0, size=(800,600))
-        self.display.start()
+        # self.display.start()
 
         self.current_path = os.path.dirname(os.path.realpath(__file__))
         self.chromedriver_path = os.path.join(self.current_path, 'chromedriver')
@@ -16,6 +18,7 @@ class TestEdaDealSite(unittest.TestCase):
 
     def test_get_offers_list(self):
         driver = self.driver
+        driver.implicitly_wait(10)
         try:
             product_counter = 1
             for page in range(1, 250):
@@ -24,10 +27,13 @@ class TestEdaDealSite(unittest.TestCase):
                     print('<---- Page #{} ---->'.format(page))
                     driver.get(page_url)
                     elements = driver.find_elements_by_class_name('b-offer__root')
-                    driver.find_element_by_class_name('b-pagination')
+                    # driver.find_element_by_class_name('b-pagination')
                     for element in elements:
-                        # print('<---- Product #{} ---->'.format(product_counter))
-                        # print(element.text)
+                        image_url = element.find_element_by_class_name('b-image__img').get_attribute('src')
+                        request = requests.get(image_url, stream=True, timeout=30)
+                        filename = image_url.split(os.sep)[-1]
+                        with open(os.path.join('images', filename), 'wb') as image:
+                            image.write(request.content)
                         product_counter +=1
                 except NoSuchElementException:
                     driver.implicitly_wait(10)
