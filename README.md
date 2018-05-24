@@ -23,3 +23,13 @@ https://selenium-python.readthedocs.io
 ```
 sudo apt-get install xvfb
 ```
+
+### Install Drivers
+PhantomJS (Deprecated)
+http://phantomjs.org/download.html
+
+Others
+https://selenium-python.readthedocs.io/installation.html#downloading-python-bindings-for-selenium
+
+### Selenium Grid
+http://automation-remarks.com/nastraivaiem-selenium-grid-za-5-minut/
