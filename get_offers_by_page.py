@@ -1,25 +1,44 @@
-import os
+import os, unittest
+from datetime import datetime
 from selenium import webdriver
 from pyvirtualdisplay import Display
+from selenium.common.exceptions import WebDriverException, NoSuchElementException
 
-current_path = os.path.dirname(os.path.realpath(__file__))
-chromedriver_path = os.path.join(current_path, 'chromedriver')
+class TestEdaDealSite(unittest.TestCase):
 
-display =Display(visible=0, size=(800,600))
-display.start()
+    def setUp(self):
+        self.display = Display(visible=0, size=(800,600))
+        self.display.start()
 
-driver = webdriver.Chrome(chromedriver_path)
-try:
-    product_counter = 1
-    for i in range(1, 237):
-        print('<---- Page #{} ---->'.format(i))
-        driver.get('https://edadeal.ru/naberezhnye-chelny/offers?page={}'.format(i))
-        driver.implicitly_wait(10)
-        elements = driver.find_elements_by_class_name('b-offer__root')
-        for element in elements:
-            print('<---- Product #{} ---->'.format(product_counter))
-            print(element.text)
-            product_counter +=1
+        self.current_path = os.path.dirname(os.path.realpath(__file__))
+        self.chromedriver_path = os.path.join(self.current_path, 'chromedriver')
+        self.driver = webdriver.Chrome(self.chromedriver_path)
 
-finally:
-    driver.quit()
+    def test_get_offers_list(self):
+        driver = self.driver
+        try:
+            product_counter = 1
+            for page in range(1, 250):
+                try:
+                    page_url = 'https://edadeal.ru/naberezhnye-chelny/offers?page={}'.format(page)
+                    print('<---- Page #{} ---->'.format(page))
+                    driver.get(page_url)
+                    elements = driver.find_elements_by_class_name('b-offer__root')
+                    driver.find_element_by_class_name('b-pagination')
+                    for element in elements:
+                        # print('<---- Product #{} ---->'.format(product_counter))
+                        # print(element.text)
+                        product_counter +=1
+                except NoSuchElementException:
+                    driver.implicitly_wait(10)
+                    driver.get(page_url)
+                    elements = driver.find_elements_by_class_name('p-offers__offer')
+                    print('Increase wait to 10')
+                except WebDriverException as err:
+                    print('Error is happened: <{}>'.format(str(err)))
+        finally:
+            driver.quit()
+
+
+if __name__ == "__main__":
+    unittest.main()
